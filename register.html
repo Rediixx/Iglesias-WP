@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Registro</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100" style="padding-top:100px;">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="images/img-01.png" alt="IMG">
+				</div>
+
+				<form class="login100-form validate-form" onsubmit="return false">
+					<div id="alertId" class="alert alert-success text-center hide" role="alert">
+						Registrado con exito!
+					</div>
+
+					<span class="login100-form-title">
+						Registro
+					</span>
+
+                    <div class="wrap-input100 validate-input" data-validate = "Ingrese su nombre">
+						<input class="input100" type="text" name="name" placeholder="Nombre" id="name">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user" aria-hidden="true"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input" data-validate = "Ingrese su apellido">
+						<input class="input100" type="text" name="apellidos" placeholder="Apellidos" id="apellidos">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Mail valido es necesario: ex@abc.xyz">
+						<input class="input100" type="text" name="email" placeholder="Email" id="email">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Se requiere contrasena">
+						<input class="input100" type="password" name="pass" placeholder="Password" id="pass">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+                    <div class="container-login100-form-btn" >
+                        <button class="login100-form-btn" id="submitData">
+                            Registrarse
+                        </button>
+                    </div>
+					<div class="text-center p-t-15">
+						<a class="txt2" href="index.html" id="submitPls">
+							Volver a Login
+							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+<!--===============================================================================================-->	
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/tilt/tilt.jquery.min.js"></script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+    <script type="module">
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+		import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js";
+        import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
+		import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+
+		const firebaseConfig = {
+	  
+		  apiKey: "AIzaSyD38bB_xZqkIvxYWrO4ZGIHYnNW6TxHzNg",
+	  
+		  authDomain: "iglesias-ladm.firebaseapp.com",
+	  
+		  databaseURL: "https://iglesias-ladm-default-rtdb.firebaseio.com",
+	  
+		  projectId: "iglesias-ladm",
+	  
+		  storageBucket: "iglesias-ladm.appspot.com",
+	  
+		  messagingSenderId: "188813296455",
+	  
+		  appId: "1:188813296455:web:35b23562e3bec3a413c262",
+	  
+		  measurementId: "G-LCWJH5E9F3"
+	  
+		};
+
+		const app = initializeApp(firebaseConfig);
+		const auth = getAuth();
+        const database = getDatabase(app);
+		const analytics = getAnalytics(app);
+
+		submitData.addEventListener('click', (e) => {
+			var email = document.getElementById('email').value;
+			var password = document.getElementById('pass').value;
+            var name = document.getElementById('name').value;
+            var apellidos = document.getElementById('apellidos').value;
+
+			console.log(email);
+
+			createUserWithEmailAndPassword(auth, email, password)
+				.then((userCredential) => {
+					// Signed in 
+					const user = userCredential.user;
+                    set(ref(database, 'users/' + user.uid), {
+                        email: email,
+                        name: name,
+                        apellidos : apellidos
+                    })
+                    .then(() => {
+						document.getElementById('alertId').classList.remove('hide');
+                    })
+                    .catch((error) => {
+                        alert('Ha ocurrido un error al registrarse!');
+                    });
+				})
+				.catch((error) => {
+					const errorCode = error.code;
+					const errorMessage = error.message;
+					console.log(errorMessage);
+				});
+		});
+	</script>
+</body>
+</html>
