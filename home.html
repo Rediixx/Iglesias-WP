@@ -36,17 +36,13 @@
                                     <tr>
                                         <th scope="col">Nombre</th>
                                         <th scope="col">Matricula</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Semestre</th>
+                                        <th scope="col">Apellido</th>
+                                        <th scope="col">Edad</th>
                                         <th scope="col" style="width: 200px;">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tbody1">
                                     <tr>
-                                        <td><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="avatar-sm rounded-circle me-2" /><a href="#" class="text-body">Simon Ryles</a></td>
-                                        <td>Full Stack Developer</td>
-                                        <td>SimonRyles@minible.com</td>
-                                        <td>125</td>
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
@@ -65,6 +61,80 @@
                 </div>
             </div>
         </div>
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+            import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+            import { getFirestore } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore.js";
+            import { doc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore.js";
+    
+            const firebaseConfig = {
+          
+              apiKey: "AIzaSyD38bB_xZqkIvxYWrO4ZGIHYnNW6TxHzNg",
+          
+              authDomain: "iglesias-ladm.firebaseapp.com",
+          
+              databaseURL: "https://iglesias-ladm-default-rtdb.firebaseio.com",
+          
+              projectId: "iglesias-ladm",
+          
+              storageBucket: "iglesias-ladm.appspot.com",
+          
+              messagingSenderId: "188813296455",
+          
+              appId: "1:188813296455:web:35b23562e3bec3a413c262",
+          
+              measurementId: "G-LCWJH5E9F3"
+          
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth();
+            const database = getFirestore(app);
+            const analytics = getAnalytics(app);
+            const querySnapshot = await getDocs(collection(database, "Alumnos"));
+    
+            function GetAllData(){
+                var alumnos = [];
+                querySnapshot.forEach((doc) => {
+                    alumnos.push(doc.data());
+                });
+                console.log(alumnos);
+                AddAllItems(alumnos);
+            }
+
+            var tbody = document.getElementById('tbody1');
+
+            function AddItemToTable(Nombre, Matricula, Apellido_Paterno, Edad) {
+                var trow = document.createElement('tr');
+                var td1 = document.createElement('td');
+                var td2 = document.createElement('td');
+                var td3 = document.createElement('td');
+                var td4 = document.createElement('td');
+
+                td1.innerHTML = Nombre;
+                td2.innerHTML = Matricula;
+                td3.innerHTML = Apellido_Paterno;
+                td4.innerHTML = Edad;
+                
+
+                trow.appendChild(td1);
+                trow.appendChild(td2);
+                trow.appendChild(td3);
+                trow.appendChild(td4);
+
+                tbody.appendChild(trow);
+            }
+
+            function AddAllItems(AlumnosDocsList){
+                tbody.innerHTML="";
+                AlumnosDocsList.forEach(element => {
+                    AddItemToTable(element.Nombre, element.Matricula, element.Apellido_Paterno, element.Edad);
+                });
+            }
+
+            window.onload = GetAllData();
+        </script>
     </body>
     <script>
         $(function() {
