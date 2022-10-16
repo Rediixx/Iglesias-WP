@@ -42,18 +42,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tbody1">
-                                    <tr>
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="px-2 text-primary"><i class="bx bx-pencil font-size-18"></i></a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-18"></i></a>
-                                                </li>  
-                                            </ul>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -66,7 +54,7 @@
             import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js";
             import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
             import { getFirestore } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore.js";
-            import { doc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore.js";
+            import { doc, setDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore.js";
     
             const firebaseConfig = {
           
@@ -95,42 +83,45 @@
             const querySnapshot = await getDocs(collection(database, "Alumnos"));
     
             function GetAllData(){
-                var alumnos = [];
-                querySnapshot.forEach((doc) => {
-                    alumnos.push(doc.data());
+                querySnapshot.forEach((docSnapshot) => {
+                    AddItemToTable(docSnapshot);
                 });
-                console.log(alumnos);
-                AddAllItems(alumnos);
             }
 
-            var tbody = document.getElementById('tbody1');
+            const alumnoList = document.querySelector('#tbody1');
 
-            function AddItemToTable(Nombre, Matricula, Apellido_Paterno, Edad) {
-                var trow = document.createElement('tr');
-                var td1 = document.createElement('td');
-                var td2 = document.createElement('td');
-                var td3 = document.createElement('td');
-                var td4 = document.createElement('td');
+            function AddItemToTable(docSnapshot) {
+                let trow = document.createElement('tr');
+                let td1 = document.createElement('td');
+                let td2 = document.createElement('td');
+                let td3 = document.createElement('td');
+                let td4 = document.createElement('td');
+                let td5 = document.createElement('td');
 
-                td1.innerHTML = Nombre;
-                td2.innerHTML = Matricula;
-                td3.innerHTML = Apellido_Paterno;
-                td4.innerHTML = Edad;
-                
+                trow.setAttribute('data-id', docSnapshot.data().Matricula);
+                td1.textContent = docSnapshot.data().Nombre;
+                td2.textContent = docSnapshot.data().Matricula;
+                td3.textContent = docSnapshot.data().Apellido_Paterno;
+                td4.textContent = docSnapshot.data().Edad;
+                td5.innerHTML = "<ul class='list-inline mb-0'><li class='list-inline-item'><a href='javascript:void(0);' data-bs-toggle='tooltip' data-bs-placement='top' title='Edit' class='px-2 text-primary'><i id='modifyElement' class='modifyItem bx bx-pencil font-size-18'></i></a></li><li class='list-inline-item'><a href='javascript:void(0);'' data-bs-toggle='tooltip' data-bs-placement='top' title='Delete' class='px-2 text-danger'><i id='deleteItem' class='deleteItem bx bx-trash-alt font-size-18'></i></a></li>  </ul>";
 
                 trow.appendChild(td1);
                 trow.appendChild(td2);
                 trow.appendChild(td3);
                 trow.appendChild(td4);
+                trow.appendChild(td5);
 
-                tbody.appendChild(trow);
-            }
+                alumnoList.appendChild(trow);
 
-            function AddAllItems(AlumnosDocsList){
-                tbody.innerHTML="";
-                AlumnosDocsList.forEach(element => {
-                    AddItemToTable(element.Nombre, element.Matricula, element.Apellido_Paterno, element.Edad);
-                });
+                var elem = document.getElementsByClassName('deleteItem');
+                for(var i = 0; i < elem.length; i++) {
+                    elem[i].addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let id = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('data-id');
+                        console.log(id);
+                        deleteDoc(doc(database, "Alumnos", id)); 
+                    }, false);
+                }
             }
 
             window.onload = GetAllData();
