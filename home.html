@@ -122,6 +122,16 @@
                         deleteDoc(doc(database, "Alumnos", id)); 
                     }, false);
                 }
+
+                var elem2 = document.getElementsByClassName('modifyItem');
+                for(var i = 0; i < elem2.length; i++) {
+                    elem2[i].addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let id = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute('data-id');
+                        sessionStorage.setItem("userID", id);
+                        window.location.href = "edit.html";
+                    }, false);
+                }
             }
 
             window.onload = GetAllData();
