@@ -17,8 +17,8 @@
               <label for="lname2">Apellido Materno</label>
               <input type="text" id="lname2" name="lastname2" placeholder="Su apellido materno..">
 
-              <label for="matricula">Matricula</label>
-              <input type="text" id="matricula" name="matricula" placeholder="Su matricula..">
+              <!--<label for="matricula">Matricula</label>
+              <input type="text" id="matricula" name="matricula" placeholder="Su matricula..">!-->
 
               <label for="edad">Edad</label>
               <input type="text" id="edad" name="edad" placeholder="0">
@@ -69,7 +69,7 @@
     
             submitData.addEventListener('click', (e) => {
                 var name = document.getElementById('fname').value;
-                var matricula = document.getElementById('matricula').value;
+                //var matricula = document.getElementById('matricula').value;
                 var apellidoPaterno = document.getElementById('lname1').value;
                 var apellidoMaterno = document.getElementById('lname2').value;
                 var edad = document.getElementById('edad').value;
@@ -78,8 +78,7 @@
                     Nombre: name,
                     Apellido_Paterno: apellidoPaterno,
                     Apellido_Materno: apellidoMaterno,
-                    Edad: edad,
-                    Matricula: matricula
+                    Edad: edad
                 })
                 .then(() => {
                     alert('Nice');
